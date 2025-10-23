@@ -24,7 +24,11 @@ function App() {
 
   // efeito scroll 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const timeout = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+
+    return () => clearTimeout(timeout);
   }, [messages]);
 
   // Efeito para Redimensionamento Automático do Textarea
@@ -78,8 +82,8 @@ function App() {
       setMessages(prevMessages => [...prevMessages, newBotMessage]);
 
     } catch (error) {
-      console.error("ERRO na chamada da API:", error);
-      const errorMessage = { text: "🤖 Bot: Desculpe, houve um erro ao comunicar com o servidor.", sender: 'bot' };
+      console.error("erro nella chiamata api:", error);
+      const errorMessage = { text: "🤖 Bot: Spiacenti, si è verificato un errore durante la comunicazione con il server.", sender: 'bot' };
       setMessages(prevMessages => [...prevMessages, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -104,7 +108,7 @@ function App() {
       bubbleClasses = 'self-start p-0';
       textStyle = { color: '#00BFFF', fontWeight: 'bold' };
     } else if (isUser) {
-      bubbleClasses += ' self-end bg-[#D3D3D3] text-white';
+      bubbleClasses += ' self-end bg-[#364140] text-white';
     } else {
       bubbleClasses = 'self-start p-0 text-white';
     }
@@ -125,7 +129,7 @@ function App() {
         <p><FontAwesomeIcon icon={faUser} className="w-5 h-5 text-white" /></p>
       </header>
 
-      <main className="flex-1 overflow-y-auto pt-24 pb-24 flex justify-center">
+      <main className="pt-24 pb-24 flex justify-center h-[calc(100vh-180px)] overflow-y-auto chat-scroll">
         <div className='w-full max-w-3xl h-full mx-4 bg-[#1B1C1D] p-6 rounded-lg flex flex-col'>
           <div id="messages" className='flex flex-col space-y-4'>
             {messages.map(renderMessage)}
@@ -150,7 +154,7 @@ function App() {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Escreva sua mensagem aqui..."
+              placeholder="Scrivi qui il tuo messaggio..."
               className="w-full p-3 rounded-lg border-none focus:outline-none bg-gray-600 text-white resize-none max-h-40 pr-12"
               disabled={isLoading}
             />
@@ -159,7 +163,7 @@ function App() {
               <button
                 type="submit"
                 className={`absolute bottom-2 right-2 p-2 rounded-full h-fit transition-colors duration-200 
-                                    bg-[#364153] // Cor de fundo solicitada
+                                    bg-[#364153]
                                     ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-80'}`}
                 disabled={isLoading}
               >
